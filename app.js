@@ -80,28 +80,30 @@
            //console.log('laadisin localStorageist massiiivi ' + this.jars.length);
 
            this.createListFromArray(JSON.parse(localStorage.jars));
+
            console.log('laadisin localStorageist');
 
        }else{
 
-         //ei olnud olemas, teen päringu serverisse
+         //ei olnud localStorageit olemas, teen päringu serverisse
 
          var xhttp = new XMLHttpRequest();
 
          // vahetub siis kui toimub muutus ühenduses
          xhttp.onreadystatechange = function() {
 
-           console.log(xhttp.readyState);
+           //console.log(xhttp.readyState);
 
            //fail jõudis tervenisti kohale
            if (xhttp.readyState == 4 && xhttp.status == 200) {
 
              var result =JSON.parse(xhttp.responseText);
-             console.log(result);
+             //console.log(result);
 
              // NB ! saab viidata MOOSIPURGILE ka Moosipurk.instance
 
              Moosipurk.instance.createListFromArray(result);
+
              console.log('laadisin serverist');
 
            }
@@ -114,9 +116,6 @@
 
        }
 
-
-       // esimene loogika oleks see, et kuulame hiireklikki nupul
-       this.bindEvents();
 
      },
 
@@ -133,6 +132,10 @@
            document.querySelector('.list-of-jars').appendChild(li);
 
        });
+
+
+      // esimene loogika oleks see, et kuulame hiireklikki nupul
+      this.bindEvents();
 
      },
      bindEvents: function(){
@@ -188,6 +191,22 @@
        console.log(JSON.stringify(this.jars));
        // JSON'i stringina salvestan localStorage'isse
        localStorage.setItem('jars', JSON.stringify(this.jars));
+
+       //salvestan serverisse
+       var xhttp = new XMLHttpRequest();
+       xhttp.onreadystatechange = function() {
+         if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+           console.log('salvestas serverisse');
+
+         }
+       };
+       console.log("saveData.php?title="+title+"&ingredients=" +ingredients);
+       xhttp.open("GET", "saveData.php?title="+title+"&ingredients=" +ingredients, true);
+       xhttp.send();
+
+
+
 
        // 2) lisan selle htmli listi juurde
        var li = new_jar.createHtmlElement();
